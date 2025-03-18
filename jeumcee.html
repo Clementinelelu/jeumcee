@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine à sous 🎰</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #4b92f0; }
+        #tirage { margin-top: 20px; }
+        button { padding: 12px 20px; font-size: 18px; cursor: pointer; border: none; background: #ff5722; color: white; border-radius: 5px; }
+        button:hover { background: #e64a19; }
+
+        /* Machine à sous compacte */
+        .slot-machine {
+            display: flex; justify-content: center; gap: 10px;
+            margin: 20px auto; padding: 10px; background: black; border-radius: 10px;
+            width: 180px; /* Réduction de la largeur */
+        }
+
+        .slot {
+            width: 50px; height: 50px; font-size: 30px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            background: white; border-radius: 5px;
+        }
+
+        /* Pop-up */
+        #popup { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #eb6e1b; color: white; font-size: 24px; padding: 20px; border-radius: 10px;
+            display: none; text-align: center; box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>🎰 Jeu MCEE</h1>
+
+    <!-- Machine à sous -->
+    <div id="tirage">
+        <p>Cliquez pour tenter votre chance :</p>
+        <div class="slot-machine">
+            <div class="slot" id="slot1">❓</div>
+            <div class="slot" id="slot2">❓</div>
+            <div class="slot" id="slot3">❓</div>
+        </div>
+        <button onclick="tournerRoue()">🎰 Lancer</button>
+        <p id="lotGagne"></p>
+    </div>
+
+    <!-- Pop-up de victoire -->
+    <div id="popup"></div>
+
+    <!-- Son de machine à sous et victoire -->
+    <audio id="slotSound">
+        <source src="https://www.myinstants.com/media/sounds/slot-machine.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="victorySound">
+        <source src="https://www.myinstants.com/media/sounds/tada-fanfare-a.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Inclusion de la bibliothèque de confettis -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // Symbols électriques : Ampoule, éclair, prise électrique, etc.
+        let symbols = ["💡", "⚡", "🔌", "🔋", "🔧"];
+        let lots = ["Réduction sur la formation", "Aide-memoire", "1 nuité au", "Formation gratuite", "Épinglette"];
+        let grosLot = "REER 1000 $ !!!";
+        let grosLotDisponible = true;
+
+        function tournerRoue() {
+            let slot1 = document.getElementById("slot1");
+            let slot2 = document.getElementById("slot2");
+            let slot3 = document.getElementById("slot3");
+            document.getElementById("slotSound").play();
+
+            let randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+
+            let interval = setInterval(() => {
+                slot1.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                slot2.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                slot3.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                slot1.innerText = randomSymbol;
+                slot2.innerText = randomSymbol;
+                slot3.innerText = randomSymbol;
+                afficherLot();
+            }, 2500);
+        }
+
+        function afficherLot() {
+            let lot = lots[Math.floor(Math.random() * lots.length)];
+            if (grosLotDisponible && Math.random() < 0.05) { 
+                lot = grosLot;
+                grosLotDisponible = false;
+            }
+
+            document.getElementById("lotGagne").innerText = "Vous avez gagné : " + lot;
+            afficherPopup(lot);
+            document.getElementById("victorySound").play();
+
+            // Lancer les confettis à la victoire
+            lancerConfettis();
+        }
+
+        function afficherPopup(lot) {
+            let popup = document.getElementById("popup");
+            popup.innerHTML = `🎉 BRAVO ! VOUS AVEZ GAGNÉ : <br> <strong>${lot}</strong> 🎉`;
+            popup.style.display = "block";
+
+            setTimeout(() => popup.style.display = "none", 4000);
+        }
+
+        function lancerConfettis() {
+            // Utilisation de la bibliothèque canvas-confetti pour afficher des confettis
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { x: 0.5, y: 0.5 },
+                colors: ['#ff5722', '#ff9800', '#ffeb3b']
+            });
+        }
+    </script>
+
+</body>
+</html>
