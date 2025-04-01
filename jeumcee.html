@@ -3,167 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu MCEE🎰</title>
+    <title>Vérification du Membre</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            padding: 20px; 
-            background: #4b92f0; 
-            font-size: 32px; /* Titre plus petit */
-            margin-top: 40px; /* Décalage vers le haut */
-        }
-        #tirage { 
-            margin-top: 40px; 
-        }
-        button { 
-            padding: 20px 40px; 
-            font-size: 36px; /* Augmentation de la taille du bouton */
-            cursor: pointer; 
-            border: none; 
-            background: #ff5722; 
-            color: white; 
-            border-radius: 10px; 
-        }
-        button:hover { 
-            background: #e64a19; 
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        /* Machine à sous avec plus de taille */
-        .slot-machine {
-            display: flex; 
-            justify-content: center; 
-            gap: 20px; /* Espacement plus large entre les slots */
-            margin: 40px auto; 
-            padding: 20px; 
-            background: black; 
-            border-radius: 20px; 
-            width: 400px; /* Augmentation de la largeur */
+        h1 {
+            font-size: 2rem;
+            color: #4cafaf;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
-        .slot {
-            width: 120px; /* Augmentation de la taille des slots */
-            height: 120px; 
-            font-size: 72px; /* Augmentation de la taille des symboles dans les slots */
+        label {
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #4cafaf;
+            border-radius: 5px;
+            width: 250px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4cafaf;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #4cafaf;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 250px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #verificationMessage {
+            font-size: 1rem;
+            margin-top: 20px;
             font-weight: bold;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: white; 
-            border-radius: 10px;
+            color: #076d07;
+            text-align: center;
         }
 
-        /* Pop-up */
-        #popup { 
-            position: fixed; 
-            top: 40%; 
-            left: 50%; 
-            transform: translate(-50%, -50%);
-            background: #eb6e1b; 
-            color: white; 
-            font-size: 48px; /* Augmentation de la taille de la police dans le pop-up */
-            padding: 70px; 
-            border-radius: 20px; 
-            text-align: center; 
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-            display: none; /* Initialement caché */
+        #playButton {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #playButton {
+            background-color: #FF9800;
+        }
+
+        #playButton:hover {
+            background-color: #f57c00;
+        }
+
+        /* Message pop-up */
+        #tirage {
+            margin-top: 40px;
+            font-size: 1.5rem;
+            color: #2196F3;
         }
 
     </style>
 </head>
 <body>
 
-    <h1>🎰 Jeu MCEE</h1>
+    <h1>Vérifiez si vous pouvez jouer</h1>
 
-    <!-- Machine à sous -->
-    <div id="tirage">
-        <p>Cliquez pour tenter votre chance :</p>
-        <div class="slot-machine">
-            <div class="slot" id="slot1">❓</div>
-            <div class="slot" id="slot2">❓</div>
-            <div class="slot" id="slot3">❓</div>
-        </div>
-        <button onclick="tournerRoue()">🎰 Lancer</button>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <label for="numeroMembre">Numéro de Membre :</label>
+        <input type="text" id="numeroMembre" placeholder="Entrez votre numéro de membre" />
+        <button onclick="verifierMembre()">Vérifier</button>
     </div>
 
-    <!-- Pop-up de victoire -->
-    <div id="popup"></div>
+    <div id="verificationMessage"></div>
 
-    <!-- Son de machine à sous et victoire -->
-    <audio id="slotSound">
-        <source src="https://www.myinstants.com/media/sounds/slot-machine.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="victorySound">
-        <source src="https://www.myinstants.com/media/sounds/tada-fanfare-a.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- Inclusion de la bibliothèque de confettis -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <button id="playButton" onclick="lancerJeu()">Lancer le jeu</button>
 
     <script>
-        // Symbols électriques : Ampoule, éclair, prise électrique, etc.
-        let symbols = ["💡", "⚡", "🔌", "🔋", "🔧"];
-        let lots = ["Réduction sur la formation", "Aide-memoire", "1 nuitée au congrès", "1 h de formation gratuite", "Épinglette"];
-        let grosLot = "REER 1000 $ !!!";
-        let grosLotDisponible = true;
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzRub7uoRPz5aYpeW-BesCzNBIwn3s2xY2vpcPrn9F6uPV8a4orOo3npoa0GNVpHY1R/exec'; 
 
-        function tournerRoue() {
-            let slot1 = document.getElementById("slot1");
-            let slot2 = document.getElementById("slot2");
-            let slot3 = document.getElementById("slot3");
-            document.getElementById("slotSound").play();
+        function verifierMembre() {
+            const numero = document.getElementById("numeroMembre").value;
+            document.getElementById("verificationMessage").innerText = "Vérification en cours...";
 
-            let randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+            // Requête vers l'API pour vérifier le résultat du membre
+            fetch(`${scriptUrl}?action=verifierResultat&numeroMembre=${numero}`)
+                .then(response => response.json())
+                .then(data => {
+                    const message = data.message;
+                    document.getElementById("verificationMessage").innerText = message;
 
-            let interval = setInterval(() => {
-                slot1.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                slot2.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                slot3.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-            }, 100);
-
-            setTimeout(() => {
-                clearInterval(interval);
-                slot1.innerText = randomSymbol;
-                slot2.innerText = randomSymbol;
-                slot3.innerText = randomSymbol;
-                afficherLot();
-            }, 2500);  // Les symboles changent pendant 2.5 secondes
+                    // Vérifier si le message est vide, null ou undefined
+                    if (!message || message.trim() === "") {
+                        // Si le message est vide ou null
+                        document.getElementById("verificationMessage").innerText = "❌ Vous n'avez pas répondu à la question.";
+                        document.getElementById("playButton").style.display = "none";
+                    } else if (message.includes("Correct")) {
+                        // Si la réponse est correcte
+                        localStorage.setItem("numeroMembre", numero);
+                        document.getElementById("playButton").style.display = "block"; 
+                    } else if (message.includes("Incorrect")) {
+                        // Si la réponse est incorrecte
+                        document.getElementById("verificationMessage").innerText = "❌ Vous ne pouvez pas jouer, résultat Incorrect.";
+                        document.getElementById("playButton").style.display = "none";
+                    } else {
+                        // Cas où le message ne contient pas "Correct" ni "Incorrect"
+                        document.getElementById("verificationMessage").innerText = "❌ Vous n'avez pas répondu à la question.";
+                        document.getElementById("playButton").style.display = "none";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("verificationMessage").innerText = "Erreur lors de la vérification.";
+                });
         }
 
-        function afficherLot() {
-            let lot = lots[Math.floor(Math.random() * lots.length)];
-            if (grosLotDisponible && Math.random() < 0.05) { 
-                lot = grosLot;
-                grosLotDisponible = false;
-            }
-
-            // Attendre 2 secondes après la fin des symboles avant d'afficher la pop-up
-            setTimeout(() => {
-                afficherPopup(lot);
-            }, 1000);  // 1 seconde d'attente après l'affichage des symboles
-            document.getElementById("victorySound").play();
-
-            // Lancer les confettis à la victoire
-            lancerConfettis();
-        }
-
-        function afficherPopup(lot) {
-            let popup = document.getElementById("popup");
-            popup.innerHTML = `🎉 BRAVO ! VOUS AVEZ GAGNÉ : <br> <strong>${lot}</strong> 🎉`;
-            popup.style.display = "block"; // Affiche la pop-up après la victoire
-        }
- // Faire disparaître la pop-up après 10 secondes
- setTimeout(() => {
-                popup.style.display = "none"; // Masque la pop-up après 15 secondes
-            }, 10000);  // 10 000 millisecondes = 10 secondes
-        function lancerConfettis() {
-            // Utilisation de la bibliothèque canvas-confetti pour afficher des confettis
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { x: 0.5, y: 0.5 },
-                colors: ['#ff5722', '#ff9800', '#ffeb3b']
-            });
+        function lancerJeu() {
+            // Passer à la page du jeu, en utilisant l'URL du jeu (en conservant le numéro de membre)
+            window.location.href = 'jeu2.html'; 
         }
     </script>
 
