@@ -132,6 +132,8 @@
 
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbwXeYBegbvtQN_WEXSknMpjXEfhYOUrKCxgX4Z_4l_2G1u1vKT6hb5iLI1SFgyrGP2G/exec'; 
 
+        let jeuFini = false; // Flag pour vérifier si le jeu a été terminé
+
         function tournerRoue() {
             let slot1 = document.getElementById("slot1");
             let slot2 = document.getElementById("slot2");
@@ -178,6 +180,7 @@
             // Cacher le bouton Lancer et afficher Nouveau Joueur
             document.getElementById("playButton").style.display = "none";
             document.getElementById("newPlayerButton").style.display = "block";
+            jeuFini = true; // Marquer le jeu comme terminé
         }
 
         function afficherPopup(lot) {
@@ -218,6 +221,18 @@
                 });
         }
 
+        // Ajouter un gestionnaire d'événements pour activer le bouton en appuyant sur "Enter"
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                // Si le jeu est terminé, simuler le clic sur "Nouveau Joueur"
+                if (jeuFini) {
+                    document.getElementById("newPlayerButton").click();
+                } else {
+                    // Sinon, simuler le clic sur le bouton "Lancer"
+                    document.getElementById("playButton").click();
+                }
+            }
+        });
     </script>
 
 </body>
