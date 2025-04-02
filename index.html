@@ -127,6 +127,8 @@
                         // Si la réponse est correcte
                         localStorage.setItem("numeroMembre", numero);
                         document.getElementById("playButton").style.display = "block"; 
+                        document.querySelector("button").style.display = "none";  // Cacher le bouton "Vérifier"
+                        document.getElementById("numeroMembre").disabled = true;  // Désactiver le champ de numéro de membre
                     } else if (message.includes("Incorrect")) {
                         // Si la réponse est incorrecte
                         document.getElementById("verificationMessage").innerText = "❌ Vous ne pouvez pas jouer, résultat Incorrect.";
@@ -144,8 +146,23 @@
 
         function lancerJeu() {
             // Passer à la page du jeu, en utilisant l'URL du jeu (en conservant le numéro de membre)
-            window.location.href = 'jeu2'; 
+            window.location.href = 'jeu2.html'; 
         }
+
+        // Activer le bouton "Vérifier" en appuyant sur Enter
+        document.getElementById("numeroMembre").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                document.querySelector("button").click(); // Simule le clic sur le bouton Vérifier
+            }
+        });
+
+        // Activer le bouton "Lancer le jeu" en appuyant sur Enter (après vérification)
+        document.addEventListener("keydown", function(event) {
+            // Vérifier si Enter est pressé et si le bouton "Lancer le jeu" est visible
+            if (event.key === "Enter" && document.getElementById("playButton").style.display === "block") {
+                document.getElementById("playButton").click(); // Simule le clic sur le bouton Lancer le jeu
+            }
+        });
     </script>
 
 </body>
