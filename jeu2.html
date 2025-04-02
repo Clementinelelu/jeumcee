@@ -164,7 +164,13 @@
 
             setTimeout(() => {
                 afficherPopup(lot);
-                enregistrerLotDansGoogleSheets(lot);  // Enregistrer le lot dans Google Sheets
+                // Récupérer le numéro de membre du localStorage
+                let numeroMembre = localStorage.getItem("numeroMembre");
+                if (numeroMembre) {
+                    enregistrerLotGagne(numeroMembre, lot);  // Enregistrer le lot dans Google Sheets avec le numéro de membre
+                } else {
+                    console.error("Le numéro de membre n'est pas trouvé dans le localStorage");
+                }
             }, 1000);
             document.getElementById("victorySound").play();
             lancerConfettis();
@@ -196,7 +202,20 @@
 
         // Fonction pour rediriger vers la page du "Nouveau Joueur"
         function nouveauJoueur() {
-            window.location.href = 'https://clementinelelu.github.io/jeumcee/'; // Redirige vers la page jeulancer.html
+            window.location.href = 'https://clementinelelu.github.io/jeumcee/'; // Redirige vers la page jeumcee.html
+        }
+
+        // Appel de l'API Google Apps pour enregistrer le lot
+        function enregistrerLotGagne(numeroMembre, lotGagne) {
+            const url = `${scriptUrl}?action=enregistrerLot&numeroMembre=${numeroMembre}&lotGagne=${encodeURIComponent(lotGagne)}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Réponse de l'API :", data);
+                })
+                .catch(error => {
+                    console.error("Erreur lors de l'enregistrement du lot :", error);
+                });
         }
 
     </script>
