@@ -189,7 +189,7 @@
         // Vérifier la réponse et bloquer les autres réponses
         function verifierReponse(boutonClique, reponse, bonneReponse) {
             const estCorrect = reponse === bonneReponse;
-            document.getElementById("resultat").innerText = estCorrect ? "🎉 Bravo, vous avez gagné !" : "❌ Raté !";
+            document.getElementById("resultat").innerText = estCorrect ? "🎉 Bravo, vous avez la bonne réponse! Rendez-vous au stand de la CMEQ pour participer au tirage" : "❌ Raté!";
             document.getElementById("resultat").style.color = estCorrect ? "#388E3C" : "#d32f2f";
 
             // Désactiver tous les boutons de réponse après la première sélection
