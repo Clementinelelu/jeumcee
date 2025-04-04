@@ -119,25 +119,25 @@
                     document.getElementById("verificationMessage").innerText = message;
 
                     // Vérifier si le message est vide, null ou undefined
-                    if (!message || message.trim() === "") {
-                        // Si le message est vide ou null
-                        document.getElementById("verificationMessage").innerText = "❌ Vous n'avez pas répondu à la question.";
-                        document.getElementById("playButton").style.display = "none";
-                    } else if (message.includes("Correct")) {
-                        // Si la réponse est correcte
-                        localStorage.setItem("numeroMembre", numero);
-                        document.getElementById("playButton").style.display = "block"; 
-                        document.querySelector("button").style.display = "none";  // Cacher le bouton "Vérifier"
-                        document.getElementById("numeroMembre").disabled = true;  // Désactiver le champ de numéro de membre
-                    } else if (message.includes("Incorrect")) {
-                        // Si la réponse est incorrecte
-                        document.getElementById("verificationMessage").innerText = "❌ Vous ne pouvez pas jouer, résultat Incorrect.";
-                        document.getElementById("playButton").style.display = "none";
-                    } else {
-                        // Cas où le message ne contient pas "Correct" ni "Incorrect"
-                        document.getElementById("verificationMessage").innerText = "❌ Vous n'avez pas répondu à la question.";
-                        document.getElementById("playButton").style.display = "none";
-                    }
+if (!message || message.trim() === "") {
+    // Si le message est vide ou null
+    document.getElementById("verificationMessage").innerText = "❌ Vous n'avez pas répondu à la question.";
+    document.getElementById("playButton").style.display = "none";
+} else if (message.trim().includes("Correct")) {
+    // Si la réponse est correcte
+    localStorage.setItem("numeroMembre", numero);
+    document.getElementById("playButton").style.display = "block"; 
+    document.querySelector("button").style.display = "none";  // Cacher le bouton "Vérifier"
+    document.getElementById("numeroMembre").disabled = true;  // Désactiver le champ de numéro de membre
+} else if (message.trim().includes("Incorrect")) {
+    // Si la réponse est incorrecte
+    document.getElementById("verificationMessage").innerText = "❌ Vous ne pouvez pas jouer, résultat Incorrect.";
+    document.getElementById("playButton").style.display = "none";
+} else {
+    // Cas où le message ne contient pas "Correct" ni "Incorrect"
+    document.getElementById("verificationMessage").innerText = "❌ Vous n'avez pas répondu à la question.";
+    document.getElementById("playButton").style.display = "none";
+}
                 })
                 .catch(error => {
                     document.getElementById("verificationMessage").innerText = "Erreur lors de la vérification.";
