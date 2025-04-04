@@ -131,7 +131,7 @@ if (!message || message.trim() === "") {
     document.getElementById("numeroMembre").disabled = true;  // Désactiver le champ de numéro de membre
 } else if (message.trim().includes("Incorrect")) {
     // Si la réponse est incorrecte
-    document.getElementById("verificationMessage").innerText = "❌ Vous ne pouvez pas jouer, résultat Incorrect.";
+    document.getElementById("verificationMessage").innerText = "❌ Vous ne pouvez pas jouer, vous n'avez pas répondu à la question ou votre résultat est incorrect.";
     document.getElementById("playButton").style.display = "none";
 } else {
     // Cas où le message ne contient pas "Correct" ni "Incorrect"
